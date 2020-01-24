@@ -17,6 +17,7 @@
 default: &default
   adapter: postgresql
   encoding: unicode
+  template: template0
   # For details on connection pooling, see Rails configuration guide
   # https://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
@@ -75,11 +76,6 @@ test:
 #
 # You can use this database configuration with:
 #
-#   production:
-#     url: <%= ENV['DATABASE_URL'] %>
-#
 production:
   <<: *default
-  database: spocket_search_backend_production
-  username: spocket_search_backend
-  password: <%= ENV['SPOCKET_SEARCH_BACKEND_DATABASE_PASSWORD'] %>
+  url: <%= ENV['DATABASE_URL'] %>
