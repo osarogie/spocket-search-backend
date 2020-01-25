@@ -5,3 +5,11 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+products = JSON.parse(File.read(File.join(Rails.root, 'spec', 'helpers/SpocketProducts.json')))
+products.each do |product|
+  Product.create!(title: product["title"],
+                  description: product["description"],
+                  price: product["price"],
+                  country: product["country"],
+                  tag_list: product["tags"])
+end
