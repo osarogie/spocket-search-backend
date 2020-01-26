@@ -1,8 +1,9 @@
 FactoryBot.define do
   factory :product do
-    title { "Walnut wood" }
-    price { 23.09 }
-    country { "United States" }
+    sequence(:title) { Faker::Name.name }
+    sequence(:description) { Faker::Name.name }
+    sequence(:price) { Faker::Number.decimal(l_digits: 2, r_digits: 2) }
+    sequence(:country) { Faker::Address.country }
 
     trait :no_title do
       title { "" }

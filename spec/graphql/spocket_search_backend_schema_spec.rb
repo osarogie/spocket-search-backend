@@ -31,7 +31,7 @@ describe SpocketSearchBackendSchema do
 
     context "for an empty search" do
       it "returns a response" do
-        expect(result["data"]["allProducts"]).to eq({"edges" => []})
+        expect(result["data"]["allProducts"]["edges"].is_a? Array).to eq(true)
       end
     end
   end

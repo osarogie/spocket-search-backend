@@ -2,21 +2,31 @@ require "rails_helper"
 
 module Products
   describe SearchProducts, type: :model do
-    it "has a valid factory" do
-      expect(build(:product)).to be_valid
+    before(:all) { create_list(:product, 30) }
+    let(:price) { Product.order("RANDOM()").first.price }
+    let(:country) { Product.order("RANDOM()").first.country }
+
+    context "country filter" do
+      it "returns only products in specified countries" do
+        products = Product.where('lower(country) = ?', country.downcase).to_a
+        expect(SearchProducts.(filter: {country: [country]})).to contain_exactly(*products)
+      end
+
+      it "is case sensitive" do
+        products = Product.where('lower(country) = ?', country.downcase).to_a
+        expect(SearchProducts.(filter: {country: [country.downcase]})).to contain_exactly(*products)
+      end
     end
 
-    it "is not valid without a title" do
-      expect(build(:product, title: nil)).to_not be_valid
-    end
+    context "price filter" do
+      it "returns products for max_price" do
+        prices = SearchProducts.(filter: {max_price: price}).pluck(:price)
+        expect(prices.any? { |pr| pr > price }).to eq(false)
+      end
 
-    it "is not valid without a country" do
-      expect(build(:product, country: nil)).to_not be_valid
-    end
-
-    context "price" do
-      it 'cannot be negative' do
-        expect { create(:product, :negative_price) }.to raise_error(ActiveRecord::RecordInvalid)
+      it "returns products for min_price" do
+        prices = SearchProducts.(filter: {min_price: price}).pluck(:price)
+        expect(prices.any? { |pr| pr < price }).to eq(false)
       end
     end
   end
