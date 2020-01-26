@@ -9,10 +9,10 @@ module Types
     field :all_countries, [String], null: false
 
     def all_products(query:, filter:, sort_by:)
-      products = if query&.empty?
-                   Product.all
-                 else
+      products = if query.present?
                    Product.search_for(query)
+                 else
+                   Product.all
                  end
 
       country_filter = filter[:country]&.filter { |c| !c.empty? }
@@ -20,7 +20,7 @@ module Types
         products = products.where(country: country_filter)
       end
 
-      if !filter[:min_price].present? && filter[:min_price] == filter[:max_price]
+      if filter[:min_price].present? && filter[:min_price] == filter[:max_price]
         products = products.where("price = :price", price: filter[:min_price])
       else
         if filter[:min_price]
