@@ -14,6 +14,18 @@ class Product < ApplicationRecord
             format: {with: /\A\d+(?:\.\d{1,2})?\z/},
             numericality: {greater_than: 0, less_than: 1000000}
 
-  pg_search_scope :search_for, against: %i(title description country)
+  pg_search_scope(
+      :search_for,
+      against: {title: "B", description: "C", country: "D"},
+      using: {
+          tsearch: {
+              tsvector_column: "tsv",
+              dictionary: "english",
+          }
+      },
+      associated_against: {
+          tags: {name: "A"}
+      }
+  )
   acts_as_taggable
 end
